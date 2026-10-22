@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SWABE | Jeffrae Pascua Portfolio</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome for Social Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Permanent+Marker&family=Outfit:wght@300;400;600;800;900&family=Fira+Code:wght@400;600&display=swap" rel="stylesheet">
+    <!-- QRCode.js Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        graffiti: ['"Permanent Marker"', 'cursive'],
+                        sans: ['Outfit', 'sans-serif'],
+                        mono: ['"Fira Code"', 'monospace']
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #08080a;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #222;
+            border-radius: 4px;
+        }
+
+        /* Custom cursor override */
+        body, a, button, input {
+            cursor: none !important;
+        }
+
+        /* Dynamic Hue/Color-Changing Animation */
+        @keyframes dynamicColorCycle {
+            0% { filter: hue-rotate(0deg); }
+            50% { filter: hue-rotate(180deg); }
+            100% { filter: hue-rotate(360deg); }
+        }
+
+        .dynamic-hue-cycle {
+            animation: dynamicColorCycle 20s linear infinite;
+        }
+
+        /* Textured Dark Brick Wall Background */
+        .brick-wall-bg {
+            background-color: #0d0d12;
+            background-image: 
+                linear-gradient(rgba(10, 10, 14, 0.88), rgba(10, 10, 14, 0.94)),
+                linear-gradient(335deg, rgba(255,255,255,0.03) 0px, rgba(255,255,255,0.03) 1px, transparent 1px, transparent 100%),
+                linear-gradient(155deg, rgba(255,255,255,0.03) 0px, rgba(255,255,255,0.03) 1px, transparent 1px, transparent 100%),
+                repeating-linear-gradient(0deg, transparent, transparent 19px, rgba(255,255,255,0.05) 20px),
+                repeating-linear-gradient(90deg, transparent, transparent 39px, rgba(255,255,255,0.03) 40px);
+            background-size: 100% 100%, 10px 10px, 10px 10px, 40px 40px, 80px 40px;
+        }
+
+        /* Graffiti text effect */
+        .graffiti-text {
+            font-family: 'Permanent Marker', cursive;
+            background: linear-gradient(180deg, #ffffff 0%, #f1f5f9 30%, #ff0055 70%, #9900ff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 0 25px rgba(255, 0, 85, 0.8))
+                    drop-shadow(6px 6px 0px #000)
+                    drop-shadow(-3px -3px 0px #000);
+            letter-spacing: 6px;
+            text-transform: uppercase;
+            position: relative;
+        }
+
+        /* Glassmorphism link cards */
+        .glass-card {
+            background: rgba(18, 18, 26, 0.75);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.6);
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .glass-card:hover {
+            transform: translateY(-4px) scale(1.01);
+            border-color: rgba(255, 0, 85, 0.5);
+            box-shadow: 0 12px 40px -10px rgba(255, 0, 85, 0.4),
+                        0 0 20px rgba(153, 0, 255, 0.3);
+        }
+
+        /* Canvas Overlay for Cursor & Particles */
+        #fx-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none;
+            z-index: 9999;
+        }
+
+        /* Neon spray drip animation */
+        @keyframes drip {
+            0% { height: 0px; opacity: 0.9; }
+            50% { opacity: 1; }
+            100% { height: 45px; opacity: 0; }
+        }
+
+        .spray-drip {
+            position: absolute;
+            width: 4px;
+            background: linear-gradient(180deg, #ff0055, transparent);
+            border-radius: 2px;
+            animation: drip 3s infinite ease-in-out;
+        }
+
+        /* Equalizer Bar Animation */
+        @keyframes eqBar {
+            0%, 100% { height: 4px; }
+            50% { height: 16px; }
+        }
+        .eq-bar {
+            width: 3px;
+            background-color: #ff0055;
+            border-radius: 2px;
+            animation: eqBar 0.8s infinite ease-in-out;
+        }
+        .eq-bar:nth-child(2) { animation-delay: 0.2s; }
+        .eq-bar:nth-child(3) { animation-delay: 0.4s; }
+        .eq-bar:nth-child(4) { animation-delay: 0.1s; }
+    </style>
+</head>
+<body class="brick-wall-bg text-gray-100 min-h-screen flex flex-col justify-between overflow-x-hidden font-sans select-none relative">
+
+    <!-- Canvas overlay for 4-leaf Black Clover Cursor & Particle Trail -->
+    <canvas id="fx-canvas"></canvas>
+
+    <!-- Dynamic Automatic Color Cycling Background Lights -->
+    <div class="fixed inset-0 pointer-events-none z-0 overflow-hidden opacity-40 dynamic-hue-cycle">
+        <div class="absolute -top-24 -left-24 w-[30rem] h-[30rem] bg-pink-600/30 rounded-full blur-3xl"></div>
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[40rem] h-[40rem] bg-purple-600/20 rounded-full blur-3xl"></div>
+        <div class="absolute -bottom-24 -right-24 w-[30rem] h-[30rem] bg-cyan-600/30 rounded-full blur-3xl"></div>
+        <!-- Huge SWABE Wall Watermark -->
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-white/5 text-[24vw] font-black pointer-events-none select-none tracking-tighter font-graffiti">
+            SWABE
+        </div>
+    </div>
+
+    <!-- Header Section -->
+    <header class="relative z-10 w-full max-w-5xl mx-auto px-6 pt-6 flex items-center justify-between gap-4">
+        
+        <!-- Left: User Identity with Logo -->
+        <div class="flex items-center space-x-3">
+            <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-pink-500 via-purple-500 to-cyan-400 p-0.5 shadow-lg shadow-pink-500/30 dynamic-hue-cycle shrink-0">
+                <div class="w-full h-full bg-black rounded-[14px] overflow-hidden flex items-center justify-center">
+                    <img src="logo.jpg" 
+                         onerror="this.onerror=null; this.src='https://placehold.co/200x200/0d0d12/ff0055?text=SWABE';" 
+                         alt="SWABE Logo" 
+                         class="w-full h-full object-cover">
+                </div>
+            </div>
+            <div>
+                <h2 class="font-bold text-sm tracking-wide text-white">Jeffrae Pascua</h2>
+                <p class="font-mono text-[10px] tracking-widest text-gray-400 uppercase">OFFICIAL PORTFOLIO</p>
+            </div>
+        </div>
+        
+        <!-- Right: Scan QR Code Button -->
+        <div>
+            <button onclick="openQrModal()" class="glass-card px-3.5 py-1.5 rounded-full text-xs font-mono flex items-center space-x-2 text-gray-200 hover:text-white transition group border-white/20">
+                <i class="fas fa-qrcode text-pink-500 group-hover:scale-110 transition"></i>
+                <span>SCAN QR CODE</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="relative z-10 w-full max-w-4xl mx-auto px-4 py-6 flex flex-col items-center justify-center my-auto">
+        
+        <!-- Top Featured Logo Avatar Container -->
+        <div class="relative group my-2">
+            <div class="absolute -inset-2 bg-gradient-to-r from-pink-500 via-purple-500 to-cyan-400 rounded-full blur-xl opacity-75 group-hover:opacity-100 transition duration-500 dynamic-hue-cycle"></div>
+            <div class="relative w-36 h-36 sm:w-44 sm:h-44 rounded-full p-1 bg-gradient-to-tr from-pink-500 via-purple-500 to-cyan-400 shadow-2xl shadow-pink-500/40">
+                <div class="w-full h-full bg-black rounded-full overflow-hidden border-2 border-white/20">
+                    <img src="logo.jpg" 
+                         onerror="this.onerror=null; this.src='https://placehold.co/400x400/0d0d12/ff0055?text=SWABE';" 
+                         alt="SWABE Featured Logo" 
+                         class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                </div>
+            </div>
+        </div>
+
+        <!-- Wall Centerstage: Graffiti Banner with Drips & Dynamic Glow -->
+        <div class="relative text-center my-4 group cursor-default">
+            
+            <!-- Spray drips behind header -->
+            <div class="spray-drip left-12 top-full" style="animation-delay: 0.2s;"></div>
+            <div class="spray-drip right-20 top-full" style="animation-delay: 1.1s;"></div>
+            <div class="spray-drip left-1/2 top-full" style="animation-delay: 0.7s;"></div>
+
+            <div class="inline-block relative">
+                <!-- Dynamic Hue Changing Ambient Glow behind graffiti -->
+                <div class="absolute -inset-6 bg-gradient-to-r from-pink-500/40 via-purple-500/40 to-cyan-500/40 rounded-3xl blur-2xl opacity-80 group-hover:opacity-100 transition duration-500 dynamic-hue-cycle"></div>
+                
+                <!-- Main Animated Graffiti Text -->
+                <h1 class="graffiti-text text-6xl sm:text-7xl md:text-8xl font-black py-2 tracking-wider">
+                    SWABE
+                </h1>
+            </div>
+            <p class="mt-1 font-mono text-xs tracking-widest text-gray-400 uppercase">Connect • Follow • Contact</p>
+        </div>
+
+        <!-- Social & Contact Links Container -->
+        <div class="w-full max-w-xl mt-4 space-y-4">
+
+            <!-- 1. Facebook Page -->
+            <a href="https://www.facebook.com/pej.66" target="_blank" rel="noopener noreferrer" 
+               class="link-btn glass-card group flex items-center justify-between p-4 rounded-2xl relative overflow-hidden">
+                <div class="absolute inset-0 bg-gradient-to-r from-blue-600/20 to-transparent opacity-0 group-hover:opacity-100 transition duration-300"></div>
+                <div class="flex items-center space-x-4 relative z-10">
+                    <div class="w-12 h-12 rounded-xl bg-blue-600/20 border border-blue-500/30 flex items-center justify-center text-blue-400 group-hover:scale-110 group-hover:bg-blue-600 group-hover:text-white transition duration-300 shadow-lg">
+                        <i class="fab fa-facebook-f text-xl"></i>
+                    </div>
+                    <div class="text-left">
+                        <h3 class="font-bold text-lg text-white group-hover:text-blue-400 transition">Facebook Page</h3>
+                        <p class="text-xs text-gray-400 font-mono">@pej.66</p>
+                    </div>
+                </div>
+                <div class="relative z-10 flex items-center space-x-2 text-gray-400 group-hover:text-white transition">
+                    <span class="text-xs font-mono hidden sm:inline">VISIT PAGE</span>
+                    <i class="fas fa-arrow-up-right-from-square text-sm group-hover:translate-x-1 group-hover:-translate-y-1 transition"></i>
+                </div>
+            </a>
+
+            <!-- 2. Official Facebook Account -->
+            <a href="https://www.facebook.com/jeffrae.pascua.12/" target="_blank" rel="noopener noreferrer" 
+               class="link-btn glass-card group flex items-center justify-between p-4 rounded-2xl relative overflow-hidden">
+                <div class="absolute inset-0 bg-gradient-to-r from-blue-500/20 to-transparent opacity-0 group-hover:opacity-100 transition duration-300"></div>
+                <div class="flex items-center space-x-4 relative z-10">
+                    <div class="w-12 h-12 rounded-xl bg-blue-500/20 border border-blue-400/30 flex items-center justify-center text-blue-300 group-hover:scale-110 group-hover:bg-blue-500 group-hover:text-white transition duration-300 shadow-lg">
+                        <i class="fab fa-facebook text-xl"></i>
+                    </div>
+                    <div class="text-left">
+                        <h3 class="font-bold text-lg text-white group-hover:text-blue-300 transition">Official FB Account</h3>
+                        <p class="text-xs text-gray-400 font-mono">Jeffrae Pascua</p>
+                    </div>
+                </div>
+                <div class="relative z-10 flex items-center space-x-2 text-gray-400 group-hover:text-white transition">
+                    <span class="text-xs font-mono hidden sm:inline">CONNECT</span>
+                    <i class="fas fa-user-plus text-sm group-hover:scale-110 transition"></i>
+                </div>
+            </a>
+
+            <!-- 3. Instagram -->
+            <a href="https://www.instagram.com/pej.swabe/" target="_blank" rel="noopener noreferrer" 
+               class="link-btn glass-card group flex items-center justify-between p-4 rounded-2xl relative overflow-hidden">
+                <div class="absolute inset-0 bg-gradient-to-r from-pink-600/20 via-purple-600/20 to-transparent opacity-0 group-hover:opacity-100 transition duration-300"></div>
+                <div class="flex items-center space-x-4 relative z-10">
+                    <div class="w-12 h-12 rounded-xl bg-gradient-to-tr from-yellow-500/20 via-pink-500/20 to-purple-500/20 border border-pink-500/30 flex items-center justify-center text-pink-400 group-hover:scale-110 group-hover:from-yellow-500 group-hover:via-pink-500 group-hover:to-purple-500 group-hover:text-white transition duration-300 shadow-lg">
+                        <i class="fab fa-instagram text-2xl"></i>
+                    </div>
+                    <div class="text-left">
+                        <h3 class="font-bold text-lg text-white group-hover:text-pink-400 transition">Instagram</h3>
+                        <p class="text-xs text-gray-400 font-mono">@pej.swabe</p>
+                    </div>
+                </div>
+                <div class="relative z-10 flex items-center space-x-2 text-gray-400 group-hover:text-white transition">
+                    <span class="text-xs font-mono hidden sm:inline">FOLLOW</span>
+                    <i class="fas fa-camera text-sm group-hover:rotate-12 transition"></i>
+                </div>
+            </a>
+
+            <!-- 4. Email / Gmail -->
+            <div class="glass-card group p-4 rounded-2xl relative overflow-hidden flex flex-col sm:flex-row items-center justify-between gap-4">
+                <div class="absolute inset-0 bg-gradient-to-r from-red-600/20 to-transparent opacity-0 group-hover:opacity-100 transition duration-300"></div>
+                
+                <a href="mailto:pascuajeffrae@gmail.com" class="link-btn flex items-center space-x-4 relative z-10 w-full sm:w-auto">
+                    <div class="w-12 h-12 rounded-xl bg-red-600/20 border border-red-500/30 flex items-center justify-center text-red-400 group-hover:scale-110 group-hover:bg-red-600 group-hover:text-white transition duration-300 shadow-lg shrink-0">
+                        <i class="fas fa-envelope text-xl"></i>
+                    </div>
+                    <div class="text-left overflow-hidden">
+                        <h3 class="font-bold text-lg text-white group-hover:text-red-400 transition">Gmail / Contact</h3>
+                        <p class="text-xs text-gray-400 font-mono truncate">pascuajeffrae@gmail.com</p>
+                    </div>
+                </a>
+
+                <!-- Quick Copy Button -->
+                <button id="copy-email-btn" onclick="copyEmail('pascuajeffrae@gmail.com')" 
+                        class="relative z-10 w-full sm:w-auto px-4 py-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 active:scale-95 transition flex items-center justify-center space-x-2 text-xs font-mono text-gray-300 hover:text-white">
+                    <i class="far fa-copy text-amber-400" id="copy-icon"></i>
+                    <span id="copy-text">COPY EMAIL</span>
+                </button>
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- Footer & Lo-Fi Audio Widget -->
+    <footer class="relative z-10 w-full max-w-5xl mx-auto px-6 py-6 flex flex-col sm:flex-row items-center justify-between border-t border-white/5 text-xs font-mono text-gray-500 gap-4">
+        <p>© 2026 Jeffrae Pascua (SWABE). All Rights Reserved.</p>
+
+        <!-- Continuous Lo-Fi Background Beat Player Widget -->
+        <div class="glass-card px-4 py-2 rounded-full flex items-center space-x-3 border-white/10 text-gray-300">
+            <button id="lofi-play-btn" onclick="toggleLofi()" class="w-7 h-7 rounded-full bg-pink-500/20 text-pink-400 flex items-center justify-center hover:bg-pink-500 hover:text-white transition">
+                <i class="fas fa-pause text-xs" id="lofi-icon"></i>
+            </button>
+            
+            <div class="flex items-center space-x-1 h-4">
+                <div class="eq-bar"></div>
+                <div class="eq-bar"></div>
+                <div class="eq-bar"></div>
+                <div class="eq-bar"></div>
+            </div>
+
+            <div class="text-[11px] leading-none">
+                <p class="font-bold text-white">Lo-Fi Chill Beat</p>
+                <p class="text-[9px] text-gray-400">AUTOPLAY ACTIVE</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- QR Code Popup Modal -->
+    <div id="qr-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-md opacity-0 pointer-events-none transition-opacity duration-300">
+        <div class="glass-card p-6 rounded-3xl border-white/20 max-w-xs w-full text-center relative transform scale-90 transition-transform duration-300" id="qr-modal-card">
+            <button onclick="closeQrModal()" class="absolute top-4 right-4 w-8 h-8 rounded-full bg-white/10 text-gray-400 hover:text-white flex items-center justify-center">
+                <i class="fas fa-times"></i>
+            </button>
+            
+            <h3 class="font-bold text-xl text-white mb-1">Scan QR Code</h3>
+            <p class="text-xs text-gray-400 font-mono mb-4">Instant Access to SWABE Portfolio</p>
+
+            <!-- Generated QR Code Container -->
+            <div id="qrcode" class="bg-white p-3 rounded-2xl inline-block shadow-2xl my-2"></div>
+
+            <p class="text-[11px] text-gray-400 mt-4 font-mono">Point camera to scan link & contact details</p>
+        </div>
+    </div>
+
+    <!-- Notification Toast -->
+    <div id="toast" class="fixed bottom-6 right-6 z-50 transform translate-y-20 opacity-0 transition-all duration-300 glass-card px-5 py-3 rounded-xl border-pink-500/50 flex items-center space-x-3 text-sm">
+        <div class="w-8 h-8 rounded-full bg-pink-500/20 text-pink-400 flex items-center justify-center font-bold">✓</div>
+        <div>
+            <p class="font-bold text-white" id="toast-title">Copied!</p>
+            <p class="text-xs text-gray-400" id="toast-msg">Email copied to clipboard.</p>
+        </div>
+    </div>
+
+    <!-- Interactive Script -->
+    <script>
+        // --- Continuous Web Audio Lo-Fi Beat Generator ---
+        class LofiEngine {
+            constructor() {
+                this.isPlaying = false;
+                this.ctx = null;
+                this.interval = null;
+                this.beatIndex = 0;
+            }
+
+            init() {
+                if (!this.ctx) {
+                    const AudioContext = window.AudioContext || window.webkitAudioContext;
+                    this.ctx = new AudioContext();
+                }
+                if (this.ctx.state === 'suspended') {
+                    this.ctx.resume();
+                }
+            }
+
+            playChord(freqs, duration) {
+                if (!this.isPlaying) return;
+                freqs.forEach(freq => {
+                    const osc = this.ctx.createOscillator();
+                    const gain = this.ctx.createGain();
+                    
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
+
+                    // Smooth lo-fi envelope
+                    gain.gain.setValueAtTime(0, this.ctx.currentTime);
+                    gain.gain.linearRampToValueAtTime(0.025, this.ctx.currentTime + 0.1);
+                    gain.gain.exponentialRampToValueAtTime(0.0001, this.ctx.currentTime + duration);
+
+                    osc.connect(gain);
+                    gain.connect(this.ctx.destination);
+
+                    osc.start();
+                    osc.stop(this.ctx.currentTime + duration);
+                });
+            }
+
+            start() {
+                this.init();
+                this.isPlaying = true;
+                
+                // Relaxed Lo-Fi chords
+                const chords = [
+                    [293.66, 370.00, 440.00, 554.37], // Dmaj7
+                    [277.18, 329.63, 415.30, 493.88], // C#m7
+                    [246.94, 293.66, 370.00, 440.00], // Bm7
+                    [220.00, 277.18, 329.63, 415.30]  // Amaj7
+                ];
+
+                this.interval = setInterval(() => {
+                    if (this.isPlaying) {
+                        const chord = chords[this.beatIndex % chords.length];
+                        this.playChord(chord, 1.8);
+                        this.beatIndex++;
+                    }
+                }, 2000);
+            }
+
+            stop() {
+                this.isPlaying = false;
+                if (this.interval) clearInterval(this.interval);
+            }
+        }
+
+        const lofi = new LofiEngine();
+
+        function startAutoplayOnInteraction() {
+            if (!lofi.isPlaying) {
+                lofi.start();
+            }
+            window.removeEventListener('click', startAutoplayOnInteraction);
+            window.removeEventListener('touchstart', startAutoplayOnInteraction);
+        }
+
+        window.addEventListener('click', startAutoplayOnInteraction);
+        window.addEventListener('touchstart', startAutoplayOnInteraction);
+
+        function toggleLofi() {
+            const icon = document.getElementById('lofi-icon');
+            if (lofi.isPlaying) {
+                lofi.stop();
+                icon.className = 'fas fa-play text-xs';
+            } else {
+                lofi.start();
+                icon.className = 'fas fa-pause text-xs';
+            }
+        }
+
+        // --- QR Code Modal Generator ---
+        let qrcodeGen = null;
+        function openQrModal() {
+            const modal = document.getElementById('qr-modal');
+            const card = document.getElementById('qr-modal-card');
+            
+            if (!qrcodeGen) {
+                qrcodeGen = new QRCode(document.getElementById("qrcode"), {
+                    text: window.location.href || "https://www.facebook.com/pej.66",
+                    width: 160,
+                    height: 160,
+                    colorDark : "#08080a",
+                    colorLight : "#ffffff",
+                    correctLevel : QRCode.CorrectLevel.H
+                });
+            }
+
+            modal.classList.remove('opacity-0', 'pointer-events-none');
+            card.classList.remove('scale-90');
+            card.classList.add('scale-100');
+        }
+
+        function closeQrModal() {
+            const modal = document.getElementById('qr-modal');
+            const card = document.getElementById('qr-modal-card');
+            
+            modal.classList.add('opacity-0', 'pointer-events-none');
+            card.classList.remove('scale-100');
+            card.classList.add('scale-90');
+        }
+
+        // Copy Email Functionality
+        function copyEmail(email) {
+            // Using standard command execution fallback for iFrame compatibility
+            const tempInput = document.createElement('input');
+            tempInput.value = email;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempInput);
+
+            const copyText = document.getElementById('copy-text');
+            const copyIcon = document.getElementById('copy-icon');
+            copyText.innerText = 'COPIED!';
+            copyIcon.className = 'fas fa-check text-green-400';
+
+            const toast = document.getElementById('toast');
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            
+            setTimeout(() => {
+                copyText.innerText = 'COPY EMAIL';
+                copyIcon.className = 'far fa-copy text-amber-400';
+                toast.classList.add('translate-y-20', 'opacity-0');
+            }, 2500);
+        }
+
+        // --- 60FPS Canvas 4-Leaf Black Clover Cursor & Shower Particle System ---
+        const canvas = document.getElementById('fx-canvas');
+        const ctx = canvas.getContext('2d');
+
+        let width, height;
+        function resizeCanvas() {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        const mouse = {
+            x: width / 2,
+            y: height / 2,
+            targetX: width / 2,
+            targetY: height / 2
+        };
+
+        window.addEventListener('mousemove', (e) => {
+            mouse.targetX = e.clientX;
+            mouse.targetY = e.clientY;
+        });
+
+        window.addEventListener('touchmove', (e) => {
+            if(e.touches.length > 0) {
+                mouse.targetX = e.touches[0].clientX;
+                mouse.targetY = e.touches[0].clientY;
+            }
+        });
+
+        // Showering Particle Class
+        class ShowerParticle {
+            constructor(x, y) {
+                this.x = x + (Math.random() - 0.5) * 16;
+                this.y = y + (Math.random() - 0.5) * 16;
+                
+                this.vx = (Math.random() - 0.5) * 1.8;
+                this.vy = Math.random() * 2.8 + 1.4; 
+                
+                this.size = Math.random() * 3.8 + 1.2;
+                this.maxLife = Math.random() * 45 + 25;
+                this.life = this.maxLife;
+
+                const colors = ['#ff0055', '#9900ff', '#00f0ff', '#ffd700', '#ffffff'];
+                this.color = colors[Math.floor(Math.random() * colors.length)];
+                this.rotation = Math.random() * Math.PI * 2;
+                this.rotSpeed = (Math.random() - 0.5) * 0.12;
+            }
+
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+                this.life--;
+                this.rotation += this.rotSpeed;
+                this.size *= 0.96;
+            }
+
+            draw(ctx) {
+                const opacity = Math.max(0, this.life / this.maxLife);
+                ctx.save();
+                ctx.translate(this.x, this.y);
+                ctx.rotate(this.rotation);
+                ctx.globalAlpha = opacity;
+                ctx.fillStyle = this.color;
+                
+                ctx.shadowColor = this.color;
+                ctx.shadowBlur = 8;
+
+                ctx.beginPath();
+                ctx.moveTo(0, -this.size);
+                ctx.lineTo(this.size, 0);
+                ctx.lineTo(0, this.size);
+                ctx.lineTo(-this.size, 0);
+                ctx.closePath();
+                ctx.fill();
+
+                ctx.restore();
+            }
+        }
+
+        const particles = [];
+
+        // Renders 4-Leaf Black Clover Cursor
+        function draw4LeafBlackClover(x, y, scale = 1, rotation = 0) {
+            ctx.save();
+            ctx.translate(x, y);
+            ctx.rotate(rotation);
+            ctx.scale(scale, scale);
+
+            ctx.shadowColor = '#ff0055';
+            ctx.shadowBlur = 18;
+
+            const leafDistance = 12;
+            const leafRadius = 9;
+
+            for (let i = 0; i < 4; i++) {
+                const angle = (i * Math.PI) / 2;
+                ctx.save();
+                ctx.rotate(angle);
+
+                ctx.strokeStyle = '#ff0055';
+                ctx.lineWidth = 2.2;
+                ctx.fillStyle = '#0a0a0e';
+
+                ctx.beginPath();
+                ctx.moveTo(0, 0);
+                ctx.bezierCurveTo(-leafRadius, -leafDistance, -leafRadius * 1.5, -leafDistance - leafRadius, 0, -leafDistance - leafRadius * 1.8);
+                ctx.bezierCurveTo(leafRadius * 1.5, -leafDistance - leafRadius, leafRadius, -leafDistance, 0, 0);
+                
+                ctx.fill();
+                ctx.stroke();
+
+                ctx.strokeStyle = '#9900ff';
+                ctx.lineWidth = 1;
+                ctx.beginPath();
+                ctx.moveTo(0, 0);
+                ctx.lineTo(0, -leafDistance - leafRadius * 0.8);
+                ctx.stroke();
+
+                ctx.restore();
+            }
+
+            ctx.fillStyle = '#ffd700';
+            ctx.shadowColor = '#ffd700';
+            ctx.shadowBlur = 10;
+            ctx.beginPath();
+            ctx.arc(0, 0, 2.5, 0, Math.PI * 2);
+            ctx.fill();
+
+            ctx.restore();
+        }
+
+        let cloverRotation = 0;
+
+        function render() {
+            ctx.clearRect(0, 0, width, height);
+
+            const dx = mouse.targetX - mouse.x;
+            const dy = mouse.targetY - mouse.y;
+            mouse.x += dx * 0.15;
+            mouse.y += dy * 0.15;
+
+            const dist = Math.hypot(dx, dy);
+            cloverRotation += 0.015 + Math.min(dist * 0.004, 0.08);
+
+            const particleCount = dist > 2 ? Math.min(Math.floor(dist / 4) + 2, 8) : 1;
+            for (let i = 0; i < particleCount; i++) {
+                particles.push(new ShowerParticle(mouse.x, mouse.y));
+            }
+
+            for (let i = particles.length - 1; i >= 0; i--) {
+                const p = particles[i];
+                p.update();
+                p.draw(ctx);
+                if (p.life <= 0 || p.size <= 0.2) {
+                    particles.splice(i, 1);
+                }
+            }
+
+            draw4LeafBlackClover(mouse.x, mouse.y, 1.1, cloverRotation);
+
+            requestAnimationFrame(render);
+        }
+
+        window.onload = function() {
+            requestAnimationFrame(render);
+        }
+    </script>
+</body>
+</html>
