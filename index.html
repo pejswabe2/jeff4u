@@ -43,9 +43,11 @@
             border-radius: 4px;
         }
 
-        /* Custom cursor override */
-        body, a, button, input {
-            cursor: none !important;
+        /* Custom cursor override ONLY for desktop/pointer devices */
+        @media (pointer: fine) {
+            body, a, button, input {
+                cursor: none !important;
+            }
         }
 
         /* Dynamic Hue/Color-Changing Animation */
@@ -102,7 +104,7 @@
                         0 0 20px rgba(153, 0, 255, 0.3);
         }
 
-        /* Canvas Overlay for Cursor & Particles */
+        /* Canvas Overlay for Cursor & Particles - Hidden on touch devices */
         #fx-canvas {
             position: fixed;
             top: 0;
@@ -111,6 +113,11 @@
             height: 100vh;
             pointer-events: none;
             z-index: 9999;
+        }
+        @media (pointer: coarse) {
+            #fx-canvas {
+                display: none !important;
+            }
         }
 
         /* Neon spray drip animation */
@@ -487,7 +494,6 @@
 
         // Copy Email Functionality
         function copyEmail(email) {
-            // Using standard command execution fallback for iFrame compatibility
             const tempInput = document.createElement('input');
             tempInput.value = email;
             document.body.appendChild(tempInput);
@@ -510,7 +516,7 @@
             }, 2500);
         }
 
-        // --- 60FPS Canvas 4-Leaf Black Clover Cursor & Shower Particle System ---
+        // --- 60FPS Canvas 4-Leaf Black Clover Cursor & Shower Particle System (Desktop Only) ---
         const canvas = document.getElementById('fx-canvas');
         const ctx = canvas.getContext('2d');
 
@@ -534,14 +540,6 @@
             mouse.targetY = e.clientY;
         });
 
-        window.addEventListener('touchmove', (e) => {
-            if(e.touches.length > 0) {
-                mouse.targetX = e.touches[0].clientX;
-                mouse.targetY = e.touches[0].clientY;
-            }
-        });
-
-        // Showering Particle Class
         class ShowerParticle {
             constructor(x, y) {
                 this.x = x + (Math.random() - 0.5) * 16;
@@ -593,7 +591,6 @@
 
         const particles = [];
 
-        // Renders 4-Leaf Black Clover Cursor
         function draw4LeafBlackClover(x, y, scale = 1, rotation = 0) {
             ctx.save();
             ctx.translate(x, y);
